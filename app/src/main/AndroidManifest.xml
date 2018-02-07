@@ -20,7 +20,7 @@
         </activity>
 
         <provider
-            android:name=".EncryptionContentProvider"
+            android:name=".provider.EncryptionContentProvider"
             android:authorities="com.newwestern.dev.provider.ENCRYPT_KEYS"
             android:enabled="true"
             android:exported="true"

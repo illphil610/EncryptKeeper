@@ -33,6 +33,7 @@ class EncryptionContentProvider : ContentProvider() {
                        selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
         val matrixCursor = MatrixCursor(arrayOf("key", "value"))
         matrixCursor.addRow(arrayOf("public", "private"))
+
         return matrixCursor
     }
 
