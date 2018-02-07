@@ -8,8 +8,47 @@
 
     <EditText
         android:id="@+id/encryptEditText"
-        android:layout_width="match_parent"
+        android:layout_width="359dp"
         android:layout_height="wrap_content"
-        android:inputType=""/>
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:hint="Enter text for the Encrypt-Keeper"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.282" />
+
+    <Button
+        android:id="@+id/encryptButton"
+        android:layout_width="159dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:hint="Encryption for the homies"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.885"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/encryptEditText"
+        app:layout_constraintVertical_bias="0.503" />
+
+    <Button
+        android:id="@+id/decryptButton"
+        android:layout_width="169dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:hint="Decryption for the haters"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/encryptEditText"
+        app:layout_constraintVertical_bias="0.503" />
 
 </android.support.constraint.ConstraintLayout>
