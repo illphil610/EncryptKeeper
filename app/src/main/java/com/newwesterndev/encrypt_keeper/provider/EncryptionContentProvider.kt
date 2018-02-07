@@ -5,8 +5,10 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
+import java.security.Key
 import java.security.KeyPair
 import java.security.KeyPairGenerator
+import java.util.*
 
 class EncryptionContentProvider : ContentProvider() {
 
