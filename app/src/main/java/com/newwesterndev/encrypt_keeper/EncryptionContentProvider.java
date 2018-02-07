@@ -3,6 +3,7 @@ package com.newwesterndev.encrypt_keeper;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.net.Uri;
 
 public class EncryptionContentProvider extends ContentProvider {
@@ -37,8 +38,9 @@ public class EncryptionContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        // TODO: Implement this to handle query requests from clients.
-        throw new UnsupportedOperationException("Not yet implemented");
+        MatrixCursor matrixCursor = new MatrixCursor( new String[] {"key", "value"});
+        matrixCursor.addRow(new String[] { "public", "private"});
+        return matrixCursor;
     }
 
     @Override
