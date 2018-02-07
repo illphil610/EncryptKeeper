@@ -18,6 +18,6 @@ class MainActivity : Activity() {
                 null,
                 null)
         cursor.moveToNext()
-        Log.e("TEST_KEY", cursor.getString(0))
+        Log.e("TEST_KEY", cursor.getString(1))
     }
 }
