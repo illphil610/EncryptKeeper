@@ -9,6 +9,7 @@ import java.security.Key
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.util.*
+import javax.crypto.Cipher
 
 class EncryptionContentProvider : ContentProvider() {
 
@@ -18,33 +19,36 @@ class EncryptionContentProvider : ContentProvider() {
     }
 
     override fun getType(uri: Uri): String? {
-        // TODO: Implement this to handle requests for the MIME type of the data
         // at the given URI.
         throw UnsupportedOperationException("Not yet implemented")
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        // TODO: Implement this to handle requests to insert a new row.
         throw UnsupportedOperationException("Not yet implemented")
     }
 
     override fun onCreate(): Boolean {
-        // TODO: Implement this to initialize your content provider on startup.
         return false
     }
 
     override fun query(uri: Uri, projection: Array<String>?, selection: String?,
                        selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
-
+        // Create a KeyPair using created method
         val keyPair = getKeyPair()
+
+        //val mCipher = Cipher.getInstance("RSA")
+        //mCipher.init(Cipher.WRAP_MODE, keyPair?.public)
+
+        //val byteArrayFromPublicKey = mCipher.wrap(keyPair?.public)
+        //val byteArrayFromPrivateKey = mCipher.wrap(keyPair?.private)
+
         val matrixCursor = MatrixCursor(arrayOf("public", "private"))
-        matrixCursor.addRow(arrayOf(keyPair?.public, keyPair?.private))
+        //matrixCursor.addRow(arrayOf(byteArrayFromPublicKey, byteArrayFromPrivateKey))
         return matrixCursor
     }
 
     override fun update(uri: Uri, values: ContentValues?, selection: String?,
                         selectionArgs: Array<String>?): Int {
-        // TODO: Implement this to handle requests to update one or more rows.
         throw UnsupportedOperationException("Not yet implemented")
     }
 

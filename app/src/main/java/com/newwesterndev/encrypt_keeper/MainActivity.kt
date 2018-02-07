@@ -31,15 +31,18 @@ class MainActivity : Activity() {
                 null,
                 null)
         mCursor.moveToNext()
+        //mCursor.close()
 
         var inputText = encryptEditText.text
-        val publicKey = mCursor.getString(0)
-        val privateKey = mCursor.getString(1)
+        //val publicKey = mCursor.getString(0)
+        //val privateKey = mCursor.getString(1)
+        ///Log.e("Public key", publicKey.toString())
+       // Log.e("Private key", privateKey.toString())
         //val actualPublicKey = convertStringToPublicKey(publicKey)
 
         encryptButton.setOnClickListener {
-            val mCipherEncrypt = Cipher.getInstance("RSA")
-            mCipherEncrypt.init(Cipher.ENCRYPT_MODE, publicKey as Key)
+            //val mCipherEncrypt = Cipher.getInstance("RSA")
+            //mCipherEncrypt.init(Cipher.ENCRYPT_MODE, publicKey as Key)
             //val encryptedBytes = mCipherEncrypt.doFinal(inputText.toString().toByteArray())
         }
 
@@ -52,7 +55,7 @@ class MainActivity : Activity() {
 
     private fun convertStringToPublicKey(publicKey: String): PublicKey? {
         val data = Base64.decode(publicKey.toByteArray(), 0)
-        var spec = X509EncodedKeySpec(data)
+        val spec = X509EncodedKeySpec(data)
         val kf = KeyFactory.getInstance("RSA")
         return kf.generatePublic(spec)
     }
