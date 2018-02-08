@@ -6,8 +6,7 @@ import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import android.util.Base64
-import android.util.Log
-import com.newwesterndev.encrypt_keeper.RSAEncryptUtility
+import com.newwesterndev.encrypt_keeper.Utilities.RSAEncryptUtility
 
 class EncryptionContentProvider : ContentProvider() {
 
