@@ -27,11 +27,12 @@ class MainActivity : Activity() {
         val publicKey = mCursor.getString(publicKey)
         val privateKey = mCursor.getString(privateKey)
 
-        // Will the Real Keys please stand up.... this is converting the String being passed by
-        // the cursor object into Private and Public keys so I can use Cipher to do the encryption
+        // Will the Real PKI Keys please stand up.... (we're gonna have some encryption here)
+        // this is converting the String being passed by the cursor object into Private and Public keys
+        // so I can use Cipher to do the encryption type of fancy stuff and more neat things....
         val actualPublicKey = encryptDelegate.getPublicKeyFromString(publicKey)
         val actualPrivateKey = encryptDelegate.getPrivateKeyFromString(privateKey)
-
+        
         encryptButton.setOnClickListener {
             val inputText = encryptEditText.text
             if (!TextUtils.isEmpty(inputText)) {

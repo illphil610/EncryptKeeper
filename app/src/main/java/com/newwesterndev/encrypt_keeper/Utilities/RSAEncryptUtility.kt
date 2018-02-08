@@ -41,14 +41,14 @@ class RSAEncryptUtility : EncryptDelegate {
         return String(decryptedBytes)
     }
 
-    @Throws(Exception::class)
+    @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     override fun getPrivateKeyFromString(key: String): PrivateKey {
         val keyFactory = KeyFactory.getInstance(ALGORITHM)
         val privateKeySpec = PKCS8EncodedKeySpec(Base64.decode(key))
         return keyFactory.generatePrivate(privateKeySpec)
     }
 
-    @Throws(Exception::class)
+    @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     override fun getPublicKeyFromString(key: String): PublicKey {
         val keyFactory = KeyFactory.getInstance(ALGORITHM)
         val publicKeySpec = X509EncodedKeySpec(Base64.decode(key))

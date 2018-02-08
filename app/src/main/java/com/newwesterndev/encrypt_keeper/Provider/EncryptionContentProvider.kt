@@ -31,15 +31,16 @@ class EncryptionContentProvider : ContentProvider() {
     override fun query(uri: Uri, projection: Array<String>?, selection: String?,
                        selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
 
-        // Create a KeyPair using created method
+        // Create a KeyPair using created method and convert to Base64 string
+        // After keys have been generated, let the user know they have been created
         val keyPair = mUtility.generateKey()
+        mUtility.showToast("KeyPair has been generated", context)
         val publicKeyToString = Base64.encodeToString(keyPair.public.encoded, Base64.DEFAULT)
         val privateKeyToString = Base64.encodeToString(keyPair.private.encoded, Base64.DEFAULT)
 
-        // Add encoded keys to a cursor and show toast to use when finished
+        // Add encoded keys to a cursor and return
         val matrixCursor = MatrixCursor(arrayOf("public", "private"))
         matrixCursor.addRow(arrayOf(publicKeyToString, privateKeyToString))
-        mUtility.showToast("KeyPair has been generated", context)
         return matrixCursor
     }
 
