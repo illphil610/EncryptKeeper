@@ -56,7 +56,6 @@ class MainActivity : Activity() {
             decryptButton.isEnabled = false
             encryptButton.isEnabled = true
         }
-
     }
 
     companion object {
