@@ -13,7 +13,7 @@ import javax.crypto.Cipher
 /**
  * Created by philip on 2/7/18.
  */
-class RSAEncryptUtility: EncryptDelegate {
+class RSAEncryptUtility : EncryptDelegate {
 
     init {
         Security.insertProviderAt(org.spongycastle.jce.provider.BouncyCastleProvider(), 1)
