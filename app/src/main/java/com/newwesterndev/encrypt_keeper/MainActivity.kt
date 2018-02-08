@@ -11,14 +11,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : Activity() {
 
     private lateinit var encryptedText: ByteArray
-    private lateinit var encryptDelegate: EncryptDelegate
+    private var encryptDelegate: EncryptDelegate = RSAEncryptUtility()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // Create my utility object and Content Resolver and get a Cursor object to query data
-        encryptDelegate = RSAEncryptUtility()
+        //encryptDelegate = RSAEncryptUtility()
         val mCursor = contentResolver.query(Uri.parse(URI), null, null, null, null)
         mCursor.moveToNext()
         mCursor.close()
