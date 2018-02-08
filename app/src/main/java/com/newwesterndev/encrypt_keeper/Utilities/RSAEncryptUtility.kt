@@ -22,7 +22,7 @@ class RSAEncryptUtility : EncryptDelegate {
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     override fun generateKey(): KeyPair {
         val keyGen = KeyPairGenerator.getInstance(ALGORITHM)
-        keyGen.initialize(1048)
+        keyGen.initialize(1024)
         return keyGen.genKeyPair()
     }
 
