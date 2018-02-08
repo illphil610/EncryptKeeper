@@ -10,7 +10,7 @@ import com.newwesterndev.encrypt_keeper.Utilities.RSAEncryptUtility
 
 class EncryptionContentProvider : ContentProvider() {
 
-    val mUtility: RSAEncryptUtility = RSAEncryptUtility()
+    private val mUtility: RSAEncryptUtility = RSAEncryptUtility()
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
         throw UnsupportedOperationException("Not yet implemented")
