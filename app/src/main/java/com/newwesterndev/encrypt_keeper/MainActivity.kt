@@ -22,8 +22,8 @@ class MainActivity : Activity() {
         mCursor.close()
 
         // Extract the strings (keys in type String) from my Content Provider
-        val publicKey = mCursor.getString(0)
-        val privateKey = mCursor.getString(1)
+        val publicKey = mCursor.getString(publicKey)
+        val privateKey = mCursor.getString(privateKey)
 
         // Will the Real Keys please stand up.... this is converting the String being passed by
         // the cursor object into Private and Public keys so I can use Cipher to do the encryption
@@ -61,5 +61,7 @@ class MainActivity : Activity() {
 
     companion object {
         private const val URI = "content://com.newwestern.dev.provider.ENCRYPT_KEYS"
+        private const val publicKey = 0
+        private const val privateKey = 1
     }
 }
