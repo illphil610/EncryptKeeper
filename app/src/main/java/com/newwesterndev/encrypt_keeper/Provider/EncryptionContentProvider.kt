@@ -34,9 +34,9 @@ class EncryptionContentProvider : ContentProvider() {
         // Create a KeyPair using created method and convert to Base64 string
         // After keys have been generated, let the user know they have been created
         val keyPair = mUtility.generateKey()
-        mUtility.showToast("KeyPair has been generated", context)
         val publicKeyToString = Base64.encodeToString(keyPair.public.encoded, Base64.DEFAULT)
         val privateKeyToString = Base64.encodeToString(keyPair.private.encoded, Base64.DEFAULT)
+        mUtility.showToast("KeyPair has been generated", context)
 
         // Add encoded keys to a cursor and return
         val matrixCursor = MatrixCursor(arrayOf("public", "private"))

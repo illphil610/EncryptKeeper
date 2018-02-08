@@ -32,7 +32,7 @@ class MainActivity : Activity() {
         // so I can use Cipher to do the encryption type of fancy stuff and more neat things....
         val actualPublicKey = encryptDelegate.getPublicKeyFromString(publicKey)
         val actualPrivateKey = encryptDelegate.getPrivateKeyFromString(privateKey)
-        
+
         encryptButton.setOnClickListener {
             val inputText = encryptEditText.text
             if (!TextUtils.isEmpty(inputText)) {
