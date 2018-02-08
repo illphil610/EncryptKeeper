@@ -28,14 +28,14 @@ class RSAEncryptUtility : EncryptDelegate {
 
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     override fun encrypt(textToEncrypt: String, publicKey: PublicKey): ByteArray {
-        val mCipherEncrypt = Cipher.getInstance("RSA")
+        val mCipherEncrypt = Cipher.getInstance(ALGORITHM)
         mCipherEncrypt.init(Cipher.ENCRYPT_MODE, publicKey)
         return mCipherEncrypt.doFinal(textToEncrypt.toByteArray())
     }
 
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     override fun decrypt(textToDecrypt: ByteArray, privateKey: PrivateKey): String {
-        val mCipherDecrypt = Cipher.getInstance("RSA")
+        val mCipherDecrypt = Cipher.getInstance(ALGORITHM)
         mCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey)
         val decryptedBytes = mCipherDecrypt.doFinal(textToDecrypt)
         return String(decryptedBytes)
