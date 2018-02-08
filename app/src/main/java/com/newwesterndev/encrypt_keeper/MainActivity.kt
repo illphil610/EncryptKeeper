@@ -1,6 +1,7 @@
 package com.newwesterndev.encrypt_keeper
 
 import android.app.Activity
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -46,7 +47,9 @@ class MainActivity : Activity() {
                 }
             }
             decryptButton.isEnabled = true
+            decryptButton.setTextColor(Color.parseColor("black"))
             encryptButton.isEnabled = false
+            encryptButton.setTextColor(Color.parseColor("white"))
         }
 
         decryptButton.setOnClickListener {
@@ -55,7 +58,9 @@ class MainActivity : Activity() {
                 displayTextEncryption.text = decryptedText
             }
             decryptButton.isEnabled = false
+            decryptButton.setTextColor(Color.parseColor("white"))
             encryptButton.isEnabled = true
+            encryptButton.setTextColor(Color.parseColor("black"))
         }
     }
 
