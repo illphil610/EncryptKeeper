@@ -25,6 +25,7 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val mUtility = RSAEncryptUtility()
         val mCursor = contentResolver.query(Uri.parse("content://com.newwestern.dev.provider.ENCRYPT_KEYS"),
                 null,
                 null,
@@ -34,23 +35,21 @@ class MainActivity : Activity() {
         //mCursor.close()
 
         var inputText = encryptEditText.text
-        //val publicKey = mCursor.getString(0)
-        //val privateKey = mCursor.getString(1)
-        ///Log.e("Public key", publicKey.toString())
-       // Log.e("Private key", privateKey.toString())
-        //val actualPublicKey = convertStringToPublicKey(publicKey)
+        val publicKey = mCursor.getString(0)
+        val privateKey = mCursor.getString(1)
+
+        Log.e("Public key", publicKey)
+        Log.e("Private key", privateKey)
+        val actualPublicKey = mUtility.getPublicKeyFromString(publicKey)
+        val actualPrivateKey = mUtility.getPrivateKeyFromString(privateKey)
+        Log.e("Actual Public", actualPublicKey.toString())
+        Log.e("Actual Private", actualPrivateKey.toString())
 
         encryptButton.setOnClickListener {
             //val mCipherEncrypt = Cipher.getInstance("RSA")
-            //mCipherEncrypt.init(Cipher.ENCRYPT_MODE, publicKey as Key)
-            //val encryptedBytes = mCipherEncrypt.doFinal(inputText.toString().toByteArray())
+            //mCipherEncrypt.init(Cipher.ENCRYPT_MODE, publicKey)
+            //val encryptedBytes = mCipherEncrypt.doFinal(inputText.toString().toByteArray()
         }
-
-
-    }
-
-    private fun encrypt(inputText: String) {
-
     }
 
     private fun convertStringToPublicKey(publicKey: String): PublicKey? {

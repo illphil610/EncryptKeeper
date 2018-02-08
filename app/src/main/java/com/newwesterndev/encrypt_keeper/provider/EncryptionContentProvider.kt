@@ -5,21 +5,19 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
-import java.security.Key
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.util.*
-import javax.crypto.Cipher
+import android.util.Base64
+import android.util.Log
+import com.newwesterndev.encrypt_keeper.RSAEncryptUtility
 
 class EncryptionContentProvider : ContentProvider() {
 
+    val mUtility: RSAEncryptUtility = RSAEncryptUtility()
+
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
-        // Implement this to handle requests to delete one or more rows.
         throw UnsupportedOperationException("Not yet implemented")
     }
 
     override fun getType(uri: Uri): String? {
-        // at the given URI.
         throw UnsupportedOperationException("Not yet implemented")
     }
 
@@ -33,34 +31,21 @@ class EncryptionContentProvider : ContentProvider() {
 
     override fun query(uri: Uri, projection: Array<String>?, selection: String?,
                        selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
+
         // Create a KeyPair using created method
-        val keyPair = getKeyPair()
+        val keyPair = mUtility.generateKey()
+        val publicKeyToString = Base64.encodeToString(keyPair.public.encoded, Base64.DEFAULT)
+        val privateKeyToString = Base64.encodeToString(keyPair.private.encoded, Base64.DEFAULT)
 
-        //val mCipher = Cipher.getInstance("RSA")
-        //mCipher.init(Cipher.WRAP_MODE, keyPair?.public)
-
-        //val byteArrayFromPublicKey = mCipher.wrap(keyPair?.public)
-        //val byteArrayFromPrivateKey = mCipher.wrap(keyPair?.private)
-
+        // Add encoded keys to a cursor and show toast to use when finished
         val matrixCursor = MatrixCursor(arrayOf("public", "private"))
-        //matrixCursor.addRow(arrayOf(byteArrayFromPublicKey, byteArrayFromPrivateKey))
+        matrixCursor.addRow(arrayOf(publicKeyToString, privateKeyToString))
+        mUtility.showToast("KeyPair has been generated", context)
         return matrixCursor
     }
 
     override fun update(uri: Uri, values: ContentValues?, selection: String?,
                         selectionArgs: Array<String>?): Int {
         throw UnsupportedOperationException("Not yet implemented")
-    }
-
-    private fun getKeyPair() : KeyPair? {
-        var keyPair : KeyPair? = null
-        try {
-            val generator: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
-            generator.initialize(2048)
-            keyPair = generator.genKeyPair()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return keyPair
     }
 }
