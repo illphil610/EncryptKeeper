@@ -2,8 +2,6 @@ package com.newwesterndev.encrypt_keeper
 
 import android.content.Context
 
-import android.util.Log
-
 import android.widget.Toast
 import org.spongycastle.util.encoders.Base64
 
@@ -22,20 +20,26 @@ class RSAEncryptUtility {
         Security.insertProviderAt(org.spongycastle.jce.provider.BouncyCastleProvider(), 1)
     }
 
-    @Throws(NoSuchAlgorithmException::class)
+    @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     fun generateKey(): KeyPair {
         val keyGen = KeyPairGenerator.getInstance(ALGORITHM)
         keyGen.initialize(1048)
         return keyGen.genKeyPair()
     }
 
-    @Throws(Exception::class)
-    fun encrypt(text: ByteArray, key: PublicKey): ByteArray? {
-        val cipherText: ByteArray?
-        val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-        cipher.init(Cipher.ENCRYPT_MODE, key)
-        cipherText = cipher.doFinal(text)
-        return cipherText
+    @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
+    fun encrypt(textToEncrypt: String, publicKey: PublicKey): ByteArray {
+        val mCipherEncrypt = Cipher.getInstance("RSA")
+        mCipherEncrypt.init(Cipher.ENCRYPT_MODE, publicKey)
+        return mCipherEncrypt.doFinal(textToEncrypt.toByteArray())
+    }
+
+    @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
+    fun decrypt(textToDecrypt: ByteArray, privateKey: PrivateKey): String {
+        val mCipherDecrypt = Cipher.getInstance("RSA")
+        mCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey)
+        val decryptedBytes = mCipherDecrypt.doFinal(textToDecrypt)
+        return String(decryptedBytes)
     }
 
     @Throws(Exception::class)
