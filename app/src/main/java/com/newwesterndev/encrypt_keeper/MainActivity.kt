@@ -6,14 +6,10 @@ import android.os.Bundle
 import android.text.TextUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import java.security.*
-import javax.crypto.Cipher
 
 class MainActivity : Activity() {
 
-    var encryptedText: ByteArray? = null
-
-    init {
-    }
+    private var encryptedText: ByteArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,12 +17,7 @@ class MainActivity : Activity() {
 
         // Create my utility object and Content Resolver and get a Cursor object to query data
         val mUtility = RSAEncryptUtility()
-        val mCursor = contentResolver.query(
-                Uri.parse("content://com.newwestern.dev.provider.ENCRYPT_KEYS"),
-                null,
-                null,
-                null,
-                null)
+        val mCursor = contentResolver.query(Uri.parse(URI), null, null, null, null)
         mCursor.moveToNext()
         mCursor.close()
 
@@ -38,7 +29,6 @@ class MainActivity : Activity() {
         // the cursor object into Private and Public keys so I can use Cipher to do the encryption
         val actualPublicKey = mUtility.getPublicKeyFromString(publicKey)
         val actualPrivateKey = mUtility.getPrivateKeyFromString(privateKey)
-        val keyPair = KeyPair(actualPublicKey, actualPrivateKey)
 
         encryptButton.setOnClickListener {
             val inputText = encryptEditText.text
@@ -52,15 +42,24 @@ class MainActivity : Activity() {
                     displayTextEncryption.text = encryptedText.toString()
                 }
             }
+            decryptButton.isEnabled = true
+            encryptButton.isEnabled = false
         }
 
         decryptButton.setOnClickListener {
             if (displayTextEncryption != null) {
-                val decryptedText = encryptedText?.let { it1 -> mUtility.decrypt(it1, actualPrivateKey) }
+                val decryptedText = encryptedText?.let { textToDecrypt -> mUtility.decrypt(textToDecrypt, actualPrivateKey) }
                 when {
                     decryptedText != null -> displayTextEncryption.text = decryptedText
                 }
             }
+            decryptButton.isEnabled = false
+            encryptButton.isEnabled = true
         }
+
+    }
+
+    companion object {
+        private const val URI = "content://com.newwestern.dev.provider.ENCRYPT_KEYS"
     }
 }

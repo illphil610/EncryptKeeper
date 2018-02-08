@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:hint="Enter text for the Encrypt-Keeper"
+        android:hint="Enter text for Encrypt-Keeper"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,6 +37,7 @@
 
     <Button
         android:id="@+id/decryptButton"
+        android:enabled="false"
         android:layout_width="169dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
