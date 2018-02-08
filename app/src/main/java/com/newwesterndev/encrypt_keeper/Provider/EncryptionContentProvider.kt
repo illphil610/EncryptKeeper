@@ -1,4 +1,4 @@
-package com.newwesterndev.encrypt_keeper.provider
+package com.newwesterndev.encrypt_keeper.Provider
 
 import android.content.ContentProvider
 import android.content.ContentValues
