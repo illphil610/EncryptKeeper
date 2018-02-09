@@ -3,4 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="mint_green">#a7ffeb</color>
+    <color name="killa_purp">#8c9eff</color>
+    <color name="pink_for_men">#f06292</color>
 </resources>
