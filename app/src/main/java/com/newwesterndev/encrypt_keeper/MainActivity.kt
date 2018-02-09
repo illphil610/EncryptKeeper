@@ -20,7 +20,6 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
 
         // Create my utility object and Content Resolver and get a Cursor object to query data
-        //encryptDelegate = RSAEncryptUtility()
         val mCursor = contentResolver.query(Uri.parse(URI), null, null, null, null)
         mCursor.moveToNext()
         mCursor.close()
@@ -36,28 +35,17 @@ class MainActivity : Activity() {
         val actualPrivateKey = encryptDelegate.getPrivateKeyFromString(privateKey)
 
         encryptButton.setOnClickListener {
-            val inputText = encryptEditText.text
             if (!TextUtils.isEmpty(encryptEditText.text)) {
                 encryptedText = encryptDelegate.encrypt(encryptEditText.text.toString(), actualPublicKey)
                 displayTextEncryption.text = encryptedText.toString()
-                inputText.clear()
-
                 decryptButton.isEnabled = true
                 encryptButton.isEnabled = false
             } else {
                 if (!TextUtils.isEmpty(displayTextEncryption.text)) {
                     encryptedText = encryptDelegate.encrypt(displayTextEncryption.text.toString(), actualPublicKey)
                     displayTextEncryption.text = encryptedText.toString()
-
                     decryptButton.isEnabled = true
-                    //decryptButton.background.setTint(resources.getColor(R.color.killa_purp))
-                    //decryptButton.setTextColor(Color.parseColor("white"))
-                    // turn d button to purple with white text
-
                     encryptButton.isEnabled = false
-                    //encryptButton.background.setTint(Color.parseColor(R.color.mint_green.toString()))
-                    //encryptButton.setTextColor(resources.getColor(R.color.mint_green))
-                    // turn e button green with black font
                 }
             }
         }
@@ -66,16 +54,9 @@ class MainActivity : Activity() {
             if (!TextUtils.isEmpty(displayTextEncryption.text)) {
                 val decryptedText = encryptedText.let { textToDecrypt -> encryptDelegate.decrypt(textToDecrypt, actualPrivateKey) }
                 displayTextEncryption.text = decryptedText
-
                 decryptButton.isEnabled = false
-                //decryptButton.setTextColor(Color.parseColor("white"))
-                //decryptButton.background.setTint(Color.parseColor("#8c9eff"))
-
                 encryptButton.isEnabled = true
-                //encryptButton.setTextColor(Color.parseColor("black"))
-                //encryptButton.background.setTint(Color.parseColor("#a7ffeb"))
             }
-
         }
     }
 
