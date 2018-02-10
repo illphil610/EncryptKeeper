@@ -7,6 +7,6 @@ import java.security.KeyPair
  */
 object Model {
     data class ProviderKeys(val keys: KeyPair,
-                           val publicKeyAsString: String,
-                           val privateKeyAsString: String)
+                            val publicKeyAsString: String,
+                            val privateKeyAsString: String)
 }
