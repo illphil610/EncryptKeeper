@@ -1,14 +1,14 @@
 package com.newwesterndev.encrypt_keeper
 
 import android.app.Activity
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.widget.Toast
+import com.newwesterndev.encrypt_keeper.Model.Model
 import com.newwesterndev.encrypt_keeper.Utilities.EncryptDelegate
 import com.newwesterndev.encrypt_keeper.Utilities.RSAEncryptUtility
 import kotlinx.android.synthetic.main.activity_main.*
+import java.security.KeyPair
 
 class MainActivity : Activity() {
 
@@ -25,24 +25,24 @@ class MainActivity : Activity() {
         mCursor.close()
 
         // Extract the strings (keys in type String) from my Content Provider
-        val publicKey = mCursor.getString(publicKey)
-        val privateKey = mCursor.getString(privateKey)
+        val publicKeyAsString = mCursor.getString(publicKey)
+        val privateKeyAsString = mCursor.getString(privateKey)
 
-        // Will the Real PKI Keys please stand up.... (we're gonna have some encryption here)
         // this is converting the String being passed by the cursor object into Private and Public keys
         // so I can use Cipher to do the encryption type of fancy stuff and more neat things....
-        val actualPublicKey = encryptDelegate.getPublicKeyFromString(publicKey)
-        val actualPrivateKey = encryptDelegate.getPrivateKeyFromString(privateKey)
+        val generatedKeyPair = KeyPair(encryptDelegate.getPublicKeyFromString(publicKeyAsString),
+                encryptDelegate.getPrivateKeyFromString(privateKeyAsString))
+        val providerKeys = Model.ProviderKeys(generatedKeyPair, publicKeyAsString, privateKeyAsString)
 
         encryptButton.setOnClickListener {
             if (!TextUtils.isEmpty(encryptEditText.text)) {
-                encryptedText = encryptDelegate.encrypt(encryptEditText.text.toString(), actualPublicKey)
+                encryptedText = encryptDelegate.encrypt(encryptEditText.text.toString(), providerKeys.keys.public)
                 displayTextEncryption.text = encryptedText.toString()
                 decryptButton.isEnabled = true
                 encryptButton.isEnabled = false
             } else {
                 if (!TextUtils.isEmpty(displayTextEncryption.text)) {
-                    encryptedText = encryptDelegate.encrypt(displayTextEncryption.text.toString(), actualPublicKey)
+                    encryptedText = encryptDelegate.encrypt(displayTextEncryption.text.toString(), providerKeys.keys.public)
                     displayTextEncryption.text = encryptedText.toString()
                     decryptButton.isEnabled = true
                     encryptButton.isEnabled = false
@@ -52,7 +52,7 @@ class MainActivity : Activity() {
 
         decryptButton.setOnClickListener {
             if (!TextUtils.isEmpty(displayTextEncryption.text)) {
-                val decryptedText = encryptedText.let { textToDecrypt -> encryptDelegate.decrypt(textToDecrypt, actualPrivateKey) }
+                val decryptedText = encryptedText.let { textToDecrypt -> encryptDelegate.decrypt(textToDecrypt, providerKeys.keys.private) }
                 displayTextEncryption.text = decryptedText
                 decryptButton.isEnabled = false
                 encryptButton.isEnabled = true
