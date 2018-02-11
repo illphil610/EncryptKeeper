@@ -12,9 +12,6 @@ import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
 
-/**
- * Created by philip on 2/7/18.
- */
 class RSAEncryptUtility : EncryptDelegate {
 
     init {

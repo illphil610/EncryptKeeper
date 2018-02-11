@@ -4,9 +4,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import org.jetbrains.anko.db.*
 
-/**
- * Created by Phil on 2/10/2018.
- */
 class KeyDbHelper(context: Context) : ManagedSQLiteOpenHelper(context, "currentkeydb") {
     override fun onCreate(db: SQLiteDatabase) {
         db.createTable(KeySQLiteContract.TABLE_NAME, true,
