@@ -1,8 +1,10 @@
 package com.newwesterndev.encrypt_keeper.Utilities
 
 import android.content.Context
+import android.database.Cursor
 
 import android.widget.Toast
+import com.newwesterndev.encrypt_keeper.Model.Model
 import org.spongycastle.util.encoders.Base64
 
 import java.security.*
@@ -55,11 +57,21 @@ class RSAEncryptUtility : EncryptDelegate {
         return keyFactory.generatePublic(publicKeySpec)
     }
 
-    fun showToast(message: String, context: Context) {
+    override fun showToast(message: String, context: Context) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun requestKeyPair(cursor: Cursor, encryptDelegate: EncryptDelegate) : Model.ProviderKeys {
+        val publicKeyAsString = cursor.getString(publicKey)
+        val privateKeyAsString = cursor.getString(privateKey)
+        val generatedKeyPair = KeyPair(encryptDelegate.getPublicKeyFromString(publicKeyAsString),
+                encryptDelegate.getPrivateKeyFromString(privateKeyAsString))
+        return Model.ProviderKeys(generatedKeyPair, publicKeyAsString, privateKeyAsString)
     }
 
     companion object {
         private const val ALGORITHM = "RSA"
+        private const val publicKey = 0
+        private const val privateKey = 1
     }
 }

@@ -1,5 +1,8 @@
 package com.newwesterndev.encrypt_keeper.Utilities
 
+import android.content.Context
+import android.database.Cursor
+import com.newwesterndev.encrypt_keeper.Model.Model
 import java.security.KeyPair
 import java.security.PrivateKey
 import java.security.PublicKey
@@ -14,4 +17,6 @@ interface EncryptDelegate {
     fun decrypt(textToDecrypt: ByteArray, privateKey: PrivateKey): String
     fun getPrivateKeyFromString(key: String): PrivateKey
     fun getPublicKeyFromString(key: String): PublicKey
+    fun requestKeyPair(cursor: Cursor, encryptDelegate: EncryptDelegate) : Model.ProviderKeys
+    fun showToast(message: String, context: Context)
 }

@@ -8,31 +8,27 @@ import com.newwesterndev.encrypt_keeper.Model.Model
 import com.newwesterndev.encrypt_keeper.Utilities.EncryptDelegate
 import com.newwesterndev.encrypt_keeper.Utilities.RSAEncryptUtility
 import kotlinx.android.synthetic.main.activity_main.*
-import java.security.KeyPair
 
 class MainActivity : Activity() {
 
     private lateinit var encryptedText: ByteArray
+    private lateinit var providerKeys: Model.ProviderKeys
     private var encryptDelegate: EncryptDelegate = RSAEncryptUtility()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Create my utility object and Content Resolver and get a Cursor object to query data
+        // Create a Content Resolver and get a Cursor object to query data
         val mCursor = contentResolver.query(Uri.parse(URI), null, null, null, null)
         mCursor.moveToNext()
         mCursor.close()
 
-        // Extract the strings (keys in type String) from my Content Provider
-        val publicKeyAsString = mCursor.getString(publicKey)
-        val privateKeyAsString = mCursor.getString(privateKey)
-
-        // this is converting the String being passed by the cursor object into Private and Public keys
-        // so I can use Cipher to do the encryption type of fancy stuff and more neat things....
-        val generatedKeyPair = KeyPair(encryptDelegate.getPublicKeyFromString(publicKeyAsString),
-                encryptDelegate.getPrivateKeyFromString(privateKeyAsString))
-        val providerKeys = Model.ProviderKeys(generatedKeyPair, publicKeyAsString, privateKeyAsString)
+        requestKeyPairButton.setOnClickListener {
+            providerKeys = encryptDelegate.requestKeyPair(mCursor, encryptDelegate)
+            encryptDelegate.showToast("KeyPair has been generated!", this)
+            encryptButton.isEnabled = true
+        }
 
         encryptButton.setOnClickListener {
             if (!TextUtils.isEmpty(encryptEditText.text)) {
@@ -46,6 +42,8 @@ class MainActivity : Activity() {
                     displayTextEncryption.text = encryptedText.toString()
                     decryptButton.isEnabled = true
                     encryptButton.isEnabled = false
+                } else {
+                    encryptDelegate.showToast("Please enter text to be encrypted", this)
                 }
             }
         }
@@ -62,7 +60,5 @@ class MainActivity : Activity() {
 
     companion object {
         private const val URI = "content://com.newwestern.dev.provider.ENCRYPT_KEYS"
-        private const val publicKey = 0
-        private const val privateKey = 1
     }
 }

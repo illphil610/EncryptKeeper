@@ -6,7 +6,6 @@ import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import android.util.Base64
-import com.newwesterndev.encrypt_keeper.R
 import com.newwesterndev.encrypt_keeper.Utilities.RSAEncryptUtility
 
 class EncryptionContentProvider : ContentProvider() {
@@ -37,7 +36,6 @@ class EncryptionContentProvider : ContentProvider() {
         val keyPair = mUtility.generateKey()
         val publicKeyToString = Base64.encodeToString(keyPair.public.encoded, Base64.DEFAULT)
         val privateKeyToString = Base64.encodeToString(keyPair.private.encoded, Base64.DEFAULT)
-        mUtility.showToast(context.getString(R.string.keyPairNotifyToast), context)
 
         // Add encoded keys to a cursor and return
         val matrixCursor = MatrixCursor(arrayOf("public", "private"))
