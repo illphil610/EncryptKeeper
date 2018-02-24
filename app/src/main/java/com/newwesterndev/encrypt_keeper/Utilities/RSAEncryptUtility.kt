@@ -1,11 +1,17 @@
 package com.newwesterndev.encrypt_keeper.Utilities
 
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
+import android.nfc.NdefMessage
+import android.nfc.NdefRecord
+import android.nfc.tech.Ndef
 
 import android.widget.Toast
 import com.newwesterndev.encrypt_keeper.Model.Model
+import org.spongycastle.openssl.jcajce.JcaPEMWriter
 import org.spongycastle.util.encoders.Base64
+import java.io.StringWriter
 
 import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
@@ -64,6 +70,24 @@ class RSAEncryptUtility : EncryptDelegate {
         val generatedKeyPair = KeyPair(encryptDelegate.getPublicKeyFromString(publicKeyAsString),
                 encryptDelegate.getPrivateKeyFromString(privateKeyAsString))
         return Model.ProviderKeys(generatedKeyPair, publicKeyAsString, privateKeyAsString)
+    }
+
+    fun creatPEMObject(publicKey: PublicKey) : String {
+        val stringWriter = StringWriter()
+        val pemWriter = JcaPEMWriter(stringWriter)
+        pemWriter.writeObject(publicKey)
+        pemWriter.close()
+        return stringWriter.toString()
+    }
+
+    fun createNdefRecords(pemFileAsString: String, messageToSend: String): Array<NdefRecord> {
+        val keysRecord = NdefRecord.createMime("text/plain", pemFileAsString.toByteArray())
+        val messageRecord = NdefRecord.createMime("text/plain", messageToSend.toByteArray())
+        return arrayOf(keysRecord, messageRecord)
+    }
+
+    fun handleNfcIntent(nfcIntent: Intent) {
+
     }
 
     companion object {

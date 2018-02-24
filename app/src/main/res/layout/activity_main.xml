@@ -32,7 +32,6 @@
         android:layout_width="159dp"
         android:layout_height="54dp"
         android:layout_marginBottom="72dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/pink_for_men"
@@ -40,15 +39,15 @@
         android:text="@string/encryption"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.575"
+        app:layout_constraintEnd_toEndOf="@+id/requestKeyPairButton"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/decryptButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.998" />
 
     <Button
         android:id="@+id/decryptButton"
-        android:layout_width="169dp"
+        android:layout_width="186dp"
         android:layout_height="53dp"
         android:layout_marginBottom="68dp"
         android:layout_marginEnd="8dp"
@@ -60,10 +59,10 @@
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintHorizontal_bias="0.09"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.99" />
+        app:layout_constraintVertical_bias="0.989" />
 
     <TextView
         android:id="@+id/displayTextEncryption"
