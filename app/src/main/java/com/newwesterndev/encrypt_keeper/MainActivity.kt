@@ -17,9 +17,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback{
 
     private lateinit var mNfcAdapter : NfcAdapter
-    private lateinit var pemFile: String
+    //private  var pemFile: String
     private lateinit var encryptedText: ByteArray
     private lateinit var providerKeys: Model.ProviderKeys
+    private lateinit var mReceivedMessageToDecrypt: ByteArray
     private var encryptDelegate = RSAEncryptUtility()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +28,6 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
         setContentView(R.layout.activity_main)
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
         if (!mNfcAdapter.isEnabled) {
             encryptDelegate.showToast(getString(R.string.enableNFC), this)
         }
@@ -38,58 +38,34 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
         val mCursor = contentResolver.query(Uri.parse(URI), null, null, null, null)
         mCursor.moveToNext()
         mCursor.close()
-
-        requestKeyPairButton.setOnClickListener {
-            providerKeys = encryptDelegate.requestKeyPair(mCursor, encryptDelegate)
-            encryptDelegate.showToast("KeyPair has been generated!", this)
-            encryptButton.isEnabled = true
-        }
+        providerKeys = encryptDelegate.requestKeyPair(mCursor, encryptDelegate)
 
         encryptButton.setOnClickListener {
             if (!TextUtils.isEmpty(encryptEditText.text)) {
-                encryptedText = encryptDelegate.encrypt(encryptEditText.text.toString(), providerKeys.keys.public)
+                encryptedText = encryptDelegate.encryptPrivate(encryptEditText.text.toString(), providerKeys.keys.private)
                 displayTextEncryption.text = encryptedText.toString()
-                decryptButton.isEnabled = true
-                encryptButton.isEnabled = false
+
             } else {
                 if (!TextUtils.isEmpty(displayTextEncryption.text)) {
-                    encryptedText = encryptDelegate.encrypt(displayTextEncryption.text.toString(), providerKeys.keys.public)
+                    encryptedText = encryptDelegate.encryptPrivate(displayTextEncryption.text.toString(), providerKeys.keys.private)
                     displayTextEncryption.text = encryptedText.toString()
-                    decryptButton.isEnabled = true
-                    encryptButton.isEnabled = false
                 } else {
                     encryptDelegate.showToast("Please enter text to be encrypted", this)
                 }
             }
         }
-
-        decryptButton.setOnClickListener {
-            if (!TextUtils.isEmpty(displayTextEncryption.text)) {
-                val decryptedText = encryptedText.let { textToDecrypt -> encryptDelegate.decrypt(textToDecrypt, providerKeys.keys.private) }
-                displayTextEncryption.text = decryptedText
-                decryptButton.isEnabled = false
-                encryptButton.isEnabled = true
-            }
-        }
     }
 
     override fun createNdefMessage(p0: NfcEvent?): NdefMessage {
-        val mCursor = contentResolver.query(Uri.parse(URI), null, null, null, null)
-        mCursor.moveToNext()
-        mCursor.close()
-
-        providerKeys = encryptDelegate.requestKeyPair(mCursor, encryptDelegate)
-        pemFile = encryptDelegate.creatPEMObject(providerKeys.keys.public)
-
-        val hello = "Hello World"
-        val recordsToAttach = encryptDelegate.createNdefRecords(pemFile, hello)
+        val textToSend: ByteArray = if (displayTextEncryption != null) { encryptedText } else { "Hello World".toByteArray() }
+        val pemFile = encryptDelegate.createPEMObject(providerKeys.keys.public)
+        val recordsToAttach = encryptDelegate.createNdefRecords(pemFile, textToSend)
         return NdefMessage(recordsToAttach)
     }
 
     override fun onNdefPushComplete(p0: NfcEvent?) {
-
         // Called when the system detects that our NdefMessage was successfully sent
-        Log.e("NDEF COMPLETE", "Set a flag here to change so it doesnt send the key?")
+        Log.e("NDEF_MESSAGE COMPLETE", "Set a flag here to change so it doesnt send the key in the next msg")
     }
 
     override fun onResume() {
@@ -99,8 +75,12 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
             val rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
             val message = rawMessages[0] as NdefMessage
             val messageRecords = message.records
-            displayTextEncryption.text = String(message.records[1].payload)
-            encryptDelegate.showToast(String(message.records[0].payload), this)
+
+            mReceivedMessageToDecrypt = message.records[1].payload
+            val key = String(message.records[0].payload)
+            val formatKey = encryptDelegate.formatPemPublicKeyString(key)
+            val publicKey = encryptDelegate.getPublicKeyFromString(formatKey)
+            displayTextEncryption.text = encryptDelegate.decryptPublic(mReceivedMessageToDecrypt, publicKey)
         }
     }
 
@@ -110,8 +90,12 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
             val rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
             val message = rawMessages?.get(0) as NdefMessage
             val messageRecords = message.records
-            displayTextEncryption.text = String(message.records[1].payload)
-            encryptDelegate.showToast(String(message.records[0].payload), this)
+
+            mReceivedMessageToDecrypt = message.records[1].payload
+            val key = String(message.records[0].payload)
+            val formatKey = encryptDelegate.formatPemPublicKeyString(key)
+            val publicKey = encryptDelegate.getPublicKeyFromString(formatKey)
+            displayTextEncryption.text = encryptDelegate.decryptPublic(mReceivedMessageToDecrypt, publicKey)
         }
     }
 

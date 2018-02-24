@@ -32,37 +32,17 @@
         android:layout_width="159dp"
         android:layout_height="54dp"
         android:layout_marginBottom="72dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/pink_for_men"
-        android:enabled="false"
+        android:enabled="true"
         android:text="@string/encryption"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/requestKeyPairButton"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/decryptButton"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.998" />
-
-    <Button
-        android:id="@+id/decryptButton"
-        android:layout_width="186dp"
-        android:layout_height="53dp"
-        android:layout_marginBottom="68dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/mint_green"
-        android:enabled="false"
-        android:text="@string/decryption"
-        android:textColor="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.09"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.989" />
+        app:layout_constraintTop_toBottomOf="@+id/displayTextEncryption"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/displayTextEncryption"
@@ -113,23 +93,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.973" />
-
-    <Button
-        android:id="@+id/requestKeyPairButton"
-        android:layout_width="359dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#8c9eff"
-        android:text="@string/request_keypair"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/displayTextEncryption"
-        app:layout_constraintVertical_bias="0.945" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"

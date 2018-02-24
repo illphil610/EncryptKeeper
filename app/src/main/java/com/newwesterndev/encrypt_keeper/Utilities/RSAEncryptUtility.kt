@@ -11,12 +11,13 @@ import android.widget.Toast
 import com.newwesterndev.encrypt_keeper.Model.Model
 import org.spongycastle.openssl.jcajce.JcaPEMWriter
 import org.spongycastle.util.encoders.Base64
-import java.io.StringWriter
 
 import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
+import java.io.*
+
 
 class RSAEncryptUtility : EncryptDelegate {
 
@@ -39,7 +40,24 @@ class RSAEncryptUtility : EncryptDelegate {
     }
 
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
+    fun encryptPrivate(textToEncrypt: String, publicKey: PrivateKey): ByteArray {
+        val mCipherEncrypt = Cipher.getInstance(ALGORITHM)
+        mCipherEncrypt.init(Cipher.ENCRYPT_MODE, publicKey)
+        return mCipherEncrypt.doFinal(textToEncrypt.toByteArray())
+    }
+
+
+
+    @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     override fun decrypt(textToDecrypt: ByteArray, privateKey: PrivateKey): String {
+        val mCipherDecrypt = Cipher.getInstance(ALGORITHM)
+        mCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey)
+        val decryptedBytes = mCipherDecrypt.doFinal(textToDecrypt)
+        return String(decryptedBytes)
+    }
+
+    @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
+    fun decryptPublic(textToDecrypt: ByteArray, privateKey: PublicKey): String {
         val mCipherDecrypt = Cipher.getInstance(ALGORITHM)
         mCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey)
         val decryptedBytes = mCipherDecrypt.doFinal(textToDecrypt)
@@ -72,7 +90,7 @@ class RSAEncryptUtility : EncryptDelegate {
         return Model.ProviderKeys(generatedKeyPair, publicKeyAsString, privateKeyAsString)
     }
 
-    fun creatPEMObject(publicKey: PublicKey) : String {
+    fun createPEMObject(publicKey: PublicKey) : String {
         val stringWriter = StringWriter()
         val pemWriter = JcaPEMWriter(stringWriter)
         pemWriter.writeObject(publicKey)
@@ -80,10 +98,16 @@ class RSAEncryptUtility : EncryptDelegate {
         return stringWriter.toString()
     }
 
-    fun createNdefRecords(pemFileAsString: String, messageToSend: String): Array<NdefRecord> {
+    fun createNdefRecords(pemFileAsString: String, messageToSend: ByteArray): Array<NdefRecord> {
         val keysRecord = NdefRecord.createMime("text/plain", pemFileAsString.toByteArray())
-        val messageRecord = NdefRecord.createMime("text/plain", messageToSend.toByteArray())
+        val messageRecord = NdefRecord.createMime("text/plain", messageToSend)
         return arrayOf(keysRecord, messageRecord)
+    }
+
+    fun formatPemPublicKeyString(pemFileAsString: String) : String {
+        var publicKeyPEM = pemFileAsString.replace("-----BEGIN PUBLIC KEY-----\n", "")
+        publicKeyPEM = publicKeyPEM.replace("-----END PUBLIC KEY-----\n", "")
+        return publicKeyPEM
     }
 
     fun handleNfcIntent(nfcIntent: Intent) {
