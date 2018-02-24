@@ -1,11 +1,8 @@
 package com.newwesterndev.encrypt_keeper.Utilities
 
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
-import android.nfc.NdefMessage
 import android.nfc.NdefRecord
-import android.nfc.tech.Ndef
 
 import android.widget.Toast
 import com.newwesterndev.encrypt_keeper.Model.Model
@@ -45,8 +42,6 @@ class RSAEncryptUtility : EncryptDelegate {
         mCipherEncrypt.init(Cipher.ENCRYPT_MODE, publicKey)
         return mCipherEncrypt.doFinal(textToEncrypt.toByteArray())
     }
-
-
 
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
     override fun decrypt(textToDecrypt: ByteArray, privateKey: PrivateKey): String {
@@ -108,10 +103,6 @@ class RSAEncryptUtility : EncryptDelegate {
         var publicKeyPEM = pemFileAsString.replace("-----BEGIN PUBLIC KEY-----\n", "")
         publicKeyPEM = publicKeyPEM.replace("-----END PUBLIC KEY-----\n", "")
         return publicKeyPEM
-    }
-
-    fun handleNfcIntent(nfcIntent: Intent) {
-
     }
 
     companion object {

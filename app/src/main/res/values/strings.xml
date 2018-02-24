@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Encrypt-Keeper</string>
     <string name="keyPairNotifyToast">KeyPair has been generated</string>
-    <string name="encryption">encryption</string>
+    <string name="encryption">encrypt</string>
     <string name="decryption">decryption</string>
     <string name="request_keypair">Request KeyPair</string>
     <string name="enableNFC">Please turn on NFC in Settings</string>
