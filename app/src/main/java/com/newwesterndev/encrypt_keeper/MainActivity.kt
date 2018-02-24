@@ -48,7 +48,7 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
                     encryptedText = encryptDelegate.encryptPrivate(displayTextEncryption.text.toString(), providerKeys.keys.private)
                     displayTextEncryption.text = encryptedText.toString()
                 } else {
-                    encryptDelegate.showToast("Please enter text to be encrypted", this)
+                    encryptDelegate.showToast(getString(R.string.enterTextToEncrypt), this)
                 }
             }
         }

@@ -5,4 +5,5 @@
     <string name="decryption">decryption</string>
     <string name="request_keypair">Request KeyPair</string>
     <string name="enableNFC">Please turn on NFC in Settings</string>
+    <string name="enterTextToEncrypt">Please enter text to be encrypted</string>
 </resources>
