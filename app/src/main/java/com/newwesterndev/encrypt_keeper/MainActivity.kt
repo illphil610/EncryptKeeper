@@ -8,6 +8,7 @@ import android.nfc.NfcAdapter
 import android.nfc.NfcEvent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import com.newwesterndev.encrypt_keeper.Model.Model
 import com.newwesterndev.encrypt_keeper.Utilities.RSAEncryptUtility
 import kotlinx.android.synthetic.main.activity_main.*
@@ -48,6 +49,7 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
                     encryptedText = encryptDelegate.encryptPrivate(displayTextEncryption.text.toString(), providerKeys.keys.private)
                     displayTextEncryption.text = encryptedText.toString()
                 } else {
+                    encryptedText = ByteArray(0)
                     encryptDelegate.showToast(getString(R.string.enterTextToEncrypt), this)
                 }
             }
@@ -55,8 +57,7 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
     }
 
     override fun createNdefMessage(p0: NfcEvent?): NdefMessage {
-        val textToSend: ByteArray = if (displayTextEncryption != null) {
-            encryptedText
+        val textToSend: ByteArray = if (displayTextEncryption != null) { encryptedText
         } else {
             "Hello World".toByteArray()
         }
@@ -88,6 +89,8 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
         val rawMessages = intent?.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
         val message = rawMessages?.get(0) as NdefMessage
         mReceivedMessageToDecrypt = message.records[1].payload
+        Log.e("Sent Byte Array:", mReceivedMessageToDecrypt.toString())
+
         val key = String(message.records[0].payload)
         val formatKey = encryptDelegate.formatPemPublicKeyString(key)
         val publicKey = encryptDelegate.getPublicKeyFromString(formatKey)
