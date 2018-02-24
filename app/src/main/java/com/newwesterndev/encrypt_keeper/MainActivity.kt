@@ -43,7 +43,6 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
             if (!TextUtils.isEmpty(encryptEditText.text)) {
                 encryptedText = encryptDelegate.encryptPrivate(encryptEditText.text.toString(), providerKeys.keys.private)
                 displayTextEncryption.text = encryptedText.toString()
-
             } else {
                 if (!TextUtils.isEmpty(displayTextEncryption.text)) {
                     encryptedText = encryptDelegate.encryptPrivate(displayTextEncryption.text.toString(), providerKeys.keys.private)
@@ -57,42 +56,45 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
 
     override fun createNdefMessage(p0: NfcEvent?): NdefMessage {
         val textToSend: ByteArray = if (displayTextEncryption != null) {
-            encryptedText } else { "Hello World".toByteArray() }
+            encryptedText
+        } else {
+            "Hello World".toByteArray()
+        }
         val pemFile = encryptDelegate.createPEMObject(providerKeys.keys.public)
         val recordsToAttach = encryptDelegate.createNdefRecords(pemFile, textToSend)
         return NdefMessage(recordsToAttach)
-        }
+    }
 
-        override fun onNdefPushComplete(p0: NfcEvent?) {
-            keyHasBeenSent = true
-        }
+    override fun onNdefPushComplete(p0: NfcEvent?) {
+        keyHasBeenSent = true
+    }
 
-        override fun onResume() {
-            super.onResume()
-            val intent = intent
-            if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
-                handleIntent(intent)
-            }
+    override fun onResume() {
+        super.onResume()
+        val intent = intent
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
+            handleIntent(intent)
         }
+    }
 
-        override fun onNewIntent(intent: Intent?) {
-            super.onNewIntent(intent)
-            if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action) {
-                handleIntent(intent)
-            }
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action) {
+            handleIntent(intent)
         }
+    }
 
-        private fun handleIntent(intent: Intent?) {
-            val rawMessages = intent?.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-            val message = rawMessages?.get(0) as NdefMessage
-            mReceivedMessageToDecrypt = message.records[1].payload
-            val key = String(message.records[0].payload)
-            val formatKey = encryptDelegate.formatPemPublicKeyString(key)
-            val publicKey = encryptDelegate.getPublicKeyFromString(formatKey)
-            displayTextEncryption.text = encryptDelegate.decryptPublic(mReceivedMessageToDecrypt, publicKey)
-        }
+    private fun handleIntent(intent: Intent?) {
+        val rawMessages = intent?.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+        val message = rawMessages?.get(0) as NdefMessage
+        mReceivedMessageToDecrypt = message.records[1].payload
+        val key = String(message.records[0].payload)
+        val formatKey = encryptDelegate.formatPemPublicKeyString(key)
+        val publicKey = encryptDelegate.getPublicKeyFromString(formatKey)
+        displayTextEncryption.text = encryptDelegate.decryptPublic(mReceivedMessageToDecrypt, publicKey)
+    }
 
-        companion object {
-            private const val URI = "content://com.newwestern.dev.provider.ENCRYPT_KEYS"
-        }
+    companion object {
+        private const val URI = "content://com.newwestern.dev.provider.ENCRYPT_KEYS"
+    }
 }
