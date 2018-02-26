@@ -6,4 +6,6 @@
     <string name="request_keypair">Request KeyPair</string>
     <string name="enableNFC">Please turn on NFC in Settings</string>
     <string name="enterTextToEncrypt">Please enter text to be encrypted</string>
+    <string name="publicKeySent">Public key has been sent</string>
+    <string name="contentURI">content://com.newwestern.dev.provider.ENCRYPT_KEYS</string>
 </resources>

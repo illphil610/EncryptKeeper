@@ -18,7 +18,6 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
     private lateinit var mNfcAdapter: NfcAdapter
     private lateinit var encryptedText: ByteArray
     private lateinit var providerKeys: Model.ProviderKeys
-    private lateinit var mReceivedMessageToDecrypt: ByteArray
     private var encryptDelegate = RSAEncryptUtility()
     private var keyHasBeenSent: Boolean = false
     private var publicKey: PublicKey? = null
@@ -26,6 +25,8 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val uri = applicationContext.getString(R.string.contentURI)
 
         // NFC stuff and things
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
@@ -36,7 +37,7 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
         mNfcAdapter.setOnNdefPushCompleteCallback(this, this)
 
         // Content Provider stuff and things
-        val mCursor = contentResolver.query(Uri.parse(URI), null, null, null, null)
+        val mCursor = contentResolver.query(Uri.parse(uri), null, null, null, null)
         mCursor.moveToNext()
         mCursor.close()
         providerKeys = encryptDelegate.requestKeyPair(mCursor, encryptDelegate)
@@ -64,7 +65,6 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
         }
 
         val pemFile = encryptDelegate.createPEMObject(providerKeys.keys.public)
-        val recordsToAttach = encryptDelegate.createNdefRecords(pemFile, textToSend)
         val pemToAttach = encryptDelegate.createNdefKeyRecord(pemFile)
         val messageToAttach = encryptDelegate.createNdefMessageRecord(textToSend)
 
@@ -73,7 +73,6 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
         } else {
             NdefMessage(messageToAttach)
         }
-        //return NdefMessage(recordsToAttach)
     }
 
     override fun onNdefPushComplete(p0: NfcEvent?) {
@@ -98,25 +97,16 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
     private fun handleIntent(intent: Intent?) {
         val rawMessages = intent?.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
         val message = rawMessages?.get(0) as NdefMessage
-        //mReceivedMessageToDecrypt = message.records[1].payload
-        //Log.e("Sent Byte Array:", mReceivedMessageToDecrypt.toString())
-
         val sentKey = String(message.records[0].payload)
         val sentMessage = message.records[0].payload
-
 
         if (!keyHasBeenSent) {
             val formatKey = encryptDelegate.formatPemPublicKeyString(sentKey)
             publicKey = encryptDelegate.getPublicKeyFromString(formatKey)
-            encryptDelegate.showToast("Public key aquired", this)
+            encryptDelegate.showToast(getString(R.string.publicKeySent), this)
             keyHasBeenSent = true
         } else {
             displayTextEncryption.text = encryptDelegate.decryptPublic(sentMessage, publicKey)
         }
-        //displayTextEncryption.text = encryptDelegate.decryptPublic(mReceivedMessageToDecrypt, publicKey)
-    }
-
-    companion object {
-        private const val URI = "content://com.newwestern.dev.provider.ENCRYPT_KEYS"
     }
 }
