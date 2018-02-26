@@ -8,10 +8,10 @@ import android.nfc.NfcAdapter
 import android.nfc.NfcEvent
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import com.newwesterndev.encrypt_keeper.Model.Model
 import com.newwesterndev.encrypt_keeper.Utilities.RSAEncryptUtility
 import kotlinx.android.synthetic.main.activity_main.*
+import java.security.PublicKey
 
 class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
@@ -21,6 +21,7 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
     private lateinit var mReceivedMessageToDecrypt: ByteArray
     private var encryptDelegate = RSAEncryptUtility()
     private var keyHasBeenSent: Boolean = false
+    private var publicKey: PublicKey? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +50,7 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
                     encryptedText = encryptDelegate.encryptPrivate(displayTextEncryption.text.toString(), providerKeys.keys.private)
                     displayTextEncryption.text = encryptedText.toString()
                 } else {
-                    encryptedText = ByteArray(0)
+                    encryptedText = ByteArray(10)
                     encryptDelegate.showToast(getString(R.string.enterTextToEncrypt), this)
                 }
             }
@@ -61,9 +62,18 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
         } else {
             "Hello World".toByteArray()
         }
+
         val pemFile = encryptDelegate.createPEMObject(providerKeys.keys.public)
         val recordsToAttach = encryptDelegate.createNdefRecords(pemFile, textToSend)
-        return NdefMessage(recordsToAttach)
+        val pemToAttach = encryptDelegate.createNdefKeyRecord(pemFile)
+        val messageToAttach = encryptDelegate.createNdefMessageRecord(textToSend)
+
+        return if (!keyHasBeenSent) {
+            NdefMessage(pemToAttach)
+        } else {
+            NdefMessage(messageToAttach)
+        }
+        //return NdefMessage(recordsToAttach)
     }
 
     override fun onNdefPushComplete(p0: NfcEvent?) {
@@ -88,13 +98,22 @@ class MainActivity : Activity(), NfcAdapter.CreateNdefMessageCallback, NfcAdapte
     private fun handleIntent(intent: Intent?) {
         val rawMessages = intent?.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
         val message = rawMessages?.get(0) as NdefMessage
-        mReceivedMessageToDecrypt = message.records[1].payload
-        Log.e("Sent Byte Array:", mReceivedMessageToDecrypt.toString())
+        //mReceivedMessageToDecrypt = message.records[1].payload
+        //Log.e("Sent Byte Array:", mReceivedMessageToDecrypt.toString())
 
-        val key = String(message.records[0].payload)
-        val formatKey = encryptDelegate.formatPemPublicKeyString(key)
-        val publicKey = encryptDelegate.getPublicKeyFromString(formatKey)
-        displayTextEncryption.text = encryptDelegate.decryptPublic(mReceivedMessageToDecrypt, publicKey)
+        val sentKey = String(message.records[0].payload)
+        val sentMessage = message.records[0].payload
+
+
+        if (!keyHasBeenSent) {
+            val formatKey = encryptDelegate.formatPemPublicKeyString(sentKey)
+            publicKey = encryptDelegate.getPublicKeyFromString(formatKey)
+            encryptDelegate.showToast("Public key aquired", this)
+            keyHasBeenSent = true
+        } else {
+            displayTextEncryption.text = encryptDelegate.decryptPublic(sentMessage, publicKey)
+        }
+        //displayTextEncryption.text = encryptDelegate.decryptPublic(mReceivedMessageToDecrypt, publicKey)
     }
 
     companion object {

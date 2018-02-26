@@ -52,7 +52,7 @@ class RSAEncryptUtility : EncryptDelegate {
     }
 
     @Throws(NoSuchAlgorithmException::class, InvalidKeyException::class)
-    fun decryptPublic(textToDecrypt: ByteArray, privateKey: PublicKey): String {
+    fun decryptPublic(textToDecrypt: ByteArray, privateKey: PublicKey?): String {
         val mCipherDecrypt = Cipher.getInstance(ALGORITHM)
         mCipherDecrypt.init(Cipher.DECRYPT_MODE, privateKey)
         val decryptedBytes = mCipherDecrypt.doFinal(textToDecrypt)
@@ -97,6 +97,14 @@ class RSAEncryptUtility : EncryptDelegate {
         val keysRecord = NdefRecord.createMime("text/plain", pemFileAsString.toByteArray())
         val messageRecord = NdefRecord.createMime("text/plain", messageToSend)
         return arrayOf(keysRecord, messageRecord)
+    }
+
+    fun createNdefKeyRecord(pemFileAsString: String): NdefRecord {
+        return NdefRecord.createMime("text/plain", pemFileAsString.toByteArray())
+    }
+
+    fun createNdefMessageRecord(messageToSend: ByteArray): NdefRecord {
+        return NdefRecord.createMime("text/plain", messageToSend)
     }
 
     fun formatPemPublicKeyString(pemFileAsString: String) : String {
